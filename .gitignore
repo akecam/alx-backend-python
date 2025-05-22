@@ -1,3 +1,5 @@
 user_data.csv
 .venv
 *-main.py
+__pycache__/
+__pycache__/*
