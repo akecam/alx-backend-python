@@ -1,5 +1,3 @@
-#!./.venv/bin/python3
-
 """
 A python database setup for `user`
 """
