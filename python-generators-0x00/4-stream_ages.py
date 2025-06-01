@@ -7,9 +7,9 @@ Memory -Efficient Aggregation with Generators
 import mysql.connector
 import statistics
 
-def stream_users_ages():
+def streamuserages():
     """
-    stream_users_ages: connect to db and gets user ages
+    stream_user_ages: connect to db and gets user ages
 
     Args:
         None
@@ -33,9 +33,7 @@ def stream_users_ages():
         data = mycursor.fetchone()
 
 
-def calculate_avg_age():
-
-        
+def calculate_avg_age(): 
     avg_value = statistics.mean((d['age'] for d in stream_users_ages()))
 
     print(f"Avergae age of users: {avg_value}")
