@@ -7,7 +7,7 @@ Memory -Efficient Aggregation with Generators
 import mysql.connector
 import statistics
 
-def streamuserages():
+def stream_user_ages():
     """
     stream_user_ages: connect to db and gets user ages
 
