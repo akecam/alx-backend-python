@@ -30,6 +30,7 @@ def stream_users_in_batches(batch_size: int):
 
 
 def batch_processing(batch_size: int):
+    
     """
     batch_processing: streams the batches of users in the database
                         and analyzes to produce a certain output
@@ -43,8 +44,6 @@ def batch_processing(batch_size: int):
             for key, value in users.items():
                 if key == "age":
                     users[key] = float(users[key])
-
-            print(users)
 
 
 def main():
