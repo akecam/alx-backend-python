@@ -28,5 +28,5 @@ def fetch_all_users(query):
     return results
 
 if __name__ == "__main__":
-    # users = fetch_all_users(query="CREATE TABLE users (id PRIMARY KEY, name VARCHAR)")
+    users = fetch_all_users(query="CREATE TABLE users (id PRIMARY KEY, name VARCHAR)")
     users = fetch_all_users(query="SELECT * FROM users")
