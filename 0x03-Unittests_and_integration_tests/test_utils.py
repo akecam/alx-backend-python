@@ -39,6 +39,7 @@ from parameterized import parameterized
 from typing import Mapping, Tuple, Union
 from unittest.mock import Mock, patch
 from utils import get_json
+from utils import memoize
 
 
 
@@ -95,6 +96,36 @@ class TestGetJson(unittest.TestCase):
             self.assertEqual(result, test_payload)
             mock_get.assert_called_with(test_url)
 
+
+class TestMemoize(unittest.TestCase):
+    """
+    Test the Memoization function in utils
+    """
+
+    def test_memoize(self):
+        """
+        test_memoize: test that a result was cache'd
+        """
+
+        class TestClass:
+
+            def a_method(self):
+                return 42
+
+            @memoize
+            def a_property(self):
+                return self.a_method()
+
+
+        test_class = TestClass()
+
+        with patch.object(test_class, 'a_method') as test_memoize:
+
+            test_class.a_property
+            test_class.a_property
+
+
+            test_memoize.assert_called_once()
 
 
 
