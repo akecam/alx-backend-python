@@ -42,7 +42,6 @@ from utils import get_json
 from utils import memoize
 
 
-
 class TestAccessNestedMap(unittest.TestCase):
     """
     TestAccessNestedMap: Test the function access_nested_map
@@ -69,22 +68,21 @@ class TestAccessNestedMap(unittest.TestCase):
             access_nested_map(nested_map=nested_map, path=path)
 
 
-
 class TestGetJson(unittest.TestCase):
     """
     Test the get_json function
     """
 
-    @patch('utils.requests.get')
+    @patch("utils.requests.get")
     def test_get_json(self, mock_get):
         """
         Test the get_json function using mock
         """
 
         test_cases = [
-                ("http://example.com", {"payload": True}),
-                ("http://holberton.io", {"payload": False})
-                ]
+            ("http://example.com", {"payload": True}),
+            ("http://holberton.io", {"payload": False}),
+        ]
 
         for test_url, test_payload in test_cases:
 
@@ -116,17 +114,14 @@ class TestMemoize(unittest.TestCase):
             def a_property(self):
                 return self.a_method()
 
-
         test_class = TestClass()
 
-        with patch.object(test_class, 'a_method') as test_memoize:
+        with patch.object(test_class, "a_method") as test_memoize:
 
             test_class.a_property
             test_class.a_property
-
 
             test_memoize.assert_called_once()
-
 
 
 if __name__ == "__main__":
