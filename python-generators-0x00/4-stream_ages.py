@@ -38,11 +38,3 @@ def calculate_avg_age():
 
     print(f"Avergae age of users: {avg_value}")
 
-
-# def main():
-    
-#     calculate_avg_age()
-
-
-# if __name__ := "__main__":
-#     main()
