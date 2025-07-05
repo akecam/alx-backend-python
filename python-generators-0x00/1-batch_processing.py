@@ -44,6 +44,7 @@ def batch_processing(batch_size: int):
             for key, value in users.items():
                 if key == "age":
                     users[key] = float(users[key])
+    return
 
 
 def main():
