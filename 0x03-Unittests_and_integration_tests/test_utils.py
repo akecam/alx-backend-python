@@ -9,14 +9,12 @@ from utils import access_nested_map
 from parameterized import parameterized
 from typing import Mapping, Tuple, Union
 from unittest.mock import Mock, patch
-from utils import get_json
-from utils import memoize
+from utils import get_json, memoize
 
 
 class TestAccessNestedMap(unittest.TestCase):
     """
     TestAccessNestedMap: Test the function access_nested_map
-
     nested_map={"a": {"b": 2}}, path=("a", "b")
     """
 
@@ -63,13 +61,14 @@ class TestGetJson(unittest.TestCase):
 
         for test_url, test_payload in test_cases:
 
-            mock_response = Mock()
-            mock_response.json.return_value = test_payload
-            mock_get.return_value = mock_response
+            with self.subTest(url=test_url):
+                mock_response = Mock()            
+                mock_response.json.return_value = test_payload
+                mock_get.return_value = mock_response
 
-            result = get_json(test_url)
-            self.assertEqual(result, test_payload)
-            mock_get.assert_called_with(test_url)
+                result = get_json(test_url)
+                self.assertEqual(result, test_payload)
+                mock_get.assert_called_with(test_url)
 
 
 class TestMemoize(unittest.TestCase):
