@@ -87,21 +87,23 @@ class TestGithubOrgClient(unittest.TestCase):
             "org_payload": fixtures.TEST_PAYLOAD[0][0],
             "repos_payload": fixtures.TEST_PAYLOAD[0][1],
             "expected_repos": [repo["name"] for repo in fixtures.TEST_PAYLOAD[0][1]],
+            "apache2_repos": [
+                repo["name"]
+                for repo in fixtures.TEST_PAYLOAD[0][1]
+                if repo.get("license", {}).get("key") == "apache-2.0"
+            ],
         }
     ]
 )
 class TestIntegrationGithubOrgClient(unittest.TestCase):
-    """Integration test for GithubOrgClient.public_repos"""
+    """Integration tests for GithubOrgClient"""
 
     @classmethod
     def setUpClass(cls):
-        """Start patcher and configure side effects"""
-
-        # Patch requests.get
+        """Start patching requests.get"""
         cls.get_patcher = patch("utils.requests.get")
         cls.mock_get = cls.get_patcher.start()
 
-        # Set up .json() return values based on URL
         def side_effect(url):
             mock_response = MagicMock()
             if url == GithubOrgClient.ORG_URL.format(org="google"):
@@ -118,11 +120,11 @@ class TestIntegrationGithubOrgClient(unittest.TestCase):
         cls.get_patcher.stop()
 
     def test_public_repos(self):
-        """Test that public_repos returns expected list of repo names"""
+        """Test public_repos returns all repo names"""
         client = GithubOrgClient("google")
         self.assertEqual(client.public_repos(), self.expected_repos)
 
     def test_public_repos_with_license(self):
-        """Test that public_repos filters repos by license (apache-2.0)"""
+        """Test public_repos filters by Apache 2.0 license"""
         client = GithubOrgClient("google")
         self.assertEqual(client.public_repos(license="apache-2.0"), self.apache2_repos)
