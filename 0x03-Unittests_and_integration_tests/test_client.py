@@ -31,3 +31,13 @@ class TestGithubOrgClient(unittest.TestCase):
         self.assertEqual(result, expected)
         url = "https://api.github.com/orgs/"
         mock_get_json.assert_called_once_with(f"{url}{org_name}")
+
+    def test_public_repos_url(self):
+        """Unit test for _public_repos_url property"""
+
+        expected_url = "https://api.github.com/orgs/test-org/repos"
+        test_payload = {"repos_url": expected_url}
+
+        with patch.object(GithubOrgClient, "org", return_value=test_payload):
+            client = GithubOrgClient("test-org")
+            self.assertEqual(client._public_repos_url, expected_url)
