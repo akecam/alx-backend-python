@@ -26,8 +26,6 @@ class Conversation(models.Model):
     )
 
 
-
-
 class Message(models.Model):
 
     message_id = models.UUIDField(default=uuid.uuid4, unique=True, editable=False)
