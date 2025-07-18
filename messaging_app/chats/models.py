@@ -76,6 +76,7 @@ class User(auth_models.AbstractUser):
     address = models.CharField(
         verbose_name="Address", max_length=255, blank=True, null=True
     )
+    is_admin = models.BooleanField(default=False)  # type: ignore
     username = None
 
     objects = UserManager()
@@ -87,6 +88,7 @@ class User(auth_models.AbstractUser):
         return f"{self.first_name} {self.last_name}"
 
 
+# Odd User Model created
 # class User(AbstractUser):
 
 #     user_id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
@@ -112,9 +114,10 @@ class Message(models.Model):
     message_id = models.UUIDField(default=uuid.uuid4, unique=True, editable=False)
     message_body = models.TextField()
     sent_at = models.DateTimeField(auto_now_add=True)
+    is_read = models.BooleanField(default=False)  # type: ignore
 
     sender = models.ForeignKey(
-        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='messages'
+        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='message_sent'
     )
     conversation = models.ForeignKey(
         Conversation, on_delete=models.CASCADE, related_name='messages'
