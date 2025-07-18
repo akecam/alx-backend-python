@@ -1,20 +1,98 @@
-from enum import unique
 from django.db import models
-from django.contrib.auth.models import AbstractUser
+from django.contrib.auth import models as auth_models
 from django.conf import settings
 import uuid
+from typing import Union
 
 
-# Create your models here.
-class User(AbstractUser):
+class UserManager(auth_models.UserManager):
+
+    def create_user(
+        self,
+        first_name: str,
+        last_name: str,
+        email: str,
+        password: Union[str, None] = None,
+        is_staff: bool = False,
+        is_superuser=False,
+    ) -> "User":
+
+        if not email:
+            raise ValueError("User must have an email")
+
+        if not first_name:
+            raise ValueError("User must have an first name")
+
+        if not last_name:
+            raise ValueError("User must have an last name")
+
+        user = self.model(email=self.normalize_email(email))
+        user.first_name = first_name
+        user.last_name = last_name
+        user.set_password(password)
+        user.is_active = True
+        user.is_staff = is_staff
+        user.is_superuser = is_superuser
+
+        user.save()
+
+        return user
+
+    def create_superuser(
+        self,
+        first_name: str,
+        last_name: str,
+        email: str,
+        password: Union[str, None] = None,
+    ) -> "User":
+
+        user = self.create_user(
+            first_name=first_name,
+            last_name=last_name,
+            email=email,
+            password=password,
+            is_staff=True,
+            is_superuser=True,
+        )
+        user.save()
+
+        return user
+
+
+class User(auth_models.AbstractUser):
 
     user_id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    email = models.EmailField(max_length=254, unique=True)
-    password = models.CharField(max_length=255)
-    first_name = models.CharField(max_length=255)
-    last_name = models.CharField(max_length=255)
-    phone_number = models.CharField(max_length=20, blank=True, null=True)
+    first_name = models.CharField(verbose_name="First Name", max_length=255)
+    last_name = models.CharField(verbose_name="Last Name", max_length=255)
+    email = models.EmailField(verbose_name="Email", unique=True, max_length=255)
 
+    phone_number = models.CharField(
+        verbose_name="Phone Number", max_length=30, blank=True, null=True
+    )
+    bio = models.TextField(verbose_name="Bio", blank=True, null=True)
+    address = models.CharField(
+        verbose_name="Address", max_length=255, blank=True, null=True
+    )
+    username = None
+
+    objects = UserManager()
+
+    USERNAME_FIELD = "email"  # set for authentication purpose
+    REQUIRED_FIELDS = ["first_name", "last_name"]  # for field when creating superuser
+
+    def __str__(self):
+        return f"{self.username} - {self.email}"
+
+
+# class User(AbstractUser):
+
+#     user_id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+#     username = models.CharField(max_length=20, unique=True)
+#     email = models.EmailField(max_length=254, unique=True)
+#     password = models.CharField(max_length=50)
+#     first_name = models.CharField(max_length=255)
+#     last_name = models.CharField(max_length=255)
+#     phone_number = models.CharField(max_length=20, blank=True, null=True)
 
 
 class Conversation(models.Model):
