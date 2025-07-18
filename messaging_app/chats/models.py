@@ -71,7 +71,7 @@ class User(auth_models.AbstractUser):
     phone_number = models.CharField(
         verbose_name="Phone Number", max_length=30, blank=True, null=True
     )
-    bio = models.TextField(verbose_name="Bio", blank=True, null=True)
+    bio = models.TextField(verbose_name="Bio", blank=True, null=True, max_length=255)
     address = models.CharField(
         verbose_name="Address", max_length=255, blank=True, null=True
     )
