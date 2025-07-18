@@ -47,7 +47,7 @@ class UserManager(auth_models.UserManager):
     ) -> "User":
 
         if not password:
-            raise ValueError("Superuser must have a password");
+            raise ValueError("Superuser must have a password")
 
         user = self.create_user(
             first_name=first_name,
@@ -57,7 +57,6 @@ class UserManager(auth_models.UserManager):
             is_staff=True,
             is_superuser=True,
         )
-        user.save()
 
         return user
 
@@ -117,8 +116,8 @@ class Message(models.Model):
     is_read = models.BooleanField(default=False)  # type: ignore
 
     sender = models.ForeignKey(
-        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='message_sent'
+        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="message_sent"
     )
     conversation = models.ForeignKey(
-        Conversation, on_delete=models.CASCADE, related_name='messages'
+        Conversation, on_delete=models.CASCADE, related_name="messages"
     )
