@@ -67,7 +67,6 @@ class User(auth_models.AbstractUser):
     first_name = models.CharField(verbose_name="First Name", max_length=255)
     last_name = models.CharField(verbose_name="Last Name", max_length=255)
     email = models.EmailField(verbose_name="Email", unique=True, max_length=255)
-
     phone_number = models.CharField(
         verbose_name="Phone Number", max_length=30, blank=True, null=True
     )
