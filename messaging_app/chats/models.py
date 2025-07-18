@@ -43,8 +43,11 @@ class UserManager(auth_models.UserManager):
         first_name: str,
         last_name: str,
         email: str,
-        password: Union[str, None] = None,
+        password: str,
     ) -> "User":
+
+        if not password:
+            raise ValueError("Superuser must have a password");
 
         user = self.create_user(
             first_name=first_name,
@@ -81,7 +84,7 @@ class User(auth_models.AbstractUser):
     REQUIRED_FIELDS = ["first_name", "last_name"]  # for field when creating superuser
 
     def __str__(self):
-        return f"{self.username} - {self.email}"
+        return f"{self.first_name} {self.last_name}"
 
 
 # class User(AbstractUser):
