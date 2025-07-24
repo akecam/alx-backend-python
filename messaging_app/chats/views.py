@@ -8,14 +8,17 @@ from .serializers import (
     UserSerializer
 )
 from django.contrib.auth import get_user_model
+from django.shortcuts import get_object_or_404
 
 User = get_user_model()
 
 
 class ConversationViewSet(viewsets.ModelViewSet):
-    queryset = Conversation.objects.all()
     serializer_class = ConversationSerializer
     permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        return Conversation.objects.filter(participants=self.request.user)    
 
     def perform_create(self, serializer):
         conversation = serializer.save()
@@ -29,11 +32,21 @@ class MessageViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         conversation_id = self.kwargs.get('conversation_pk')
-        return Message.objects.filter(conversation_id=conversation_id)
+        conversation = get_object_or_404(
+            Conversation,
+            id=conversation_id,
+            participants=self.request.user
+        )
+        return Message.objects.filter(conversation=conversation)
 
     def perform_create(self, serializer):
         conversation_id = self.kwargs.get('conversation_pk')
+        conversation = get_object_or_404(
+            Conversation,
+            id=conversation_id,
+            participants=self.request.user
+        )
         serializer.save(
-            conversation_id=conversation_id,
+            conversation=conversation,
             sender=self.request.user
         )
