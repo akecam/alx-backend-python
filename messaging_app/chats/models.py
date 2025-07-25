@@ -86,18 +86,6 @@ class User(auth_models.AbstractUser):
         return f"{self.first_name} {self.last_name}"
 
 
-# Odd User Model created
-# class User(AbstractUser):
-
-#     user_id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-#     username = models.CharField(max_length=20, unique=True)
-#     email = models.EmailField(max_length=254, unique=True)
-#     password = models.CharField(max_length=50)
-#     first_name = models.CharField(max_length=255)
-#     last_name = models.CharField(max_length=255)
-#     phone_number = models.CharField(max_length=20, blank=True, null=True)
-
-
 class Conversation(models.Model):
     conversation_id = models.UUIDField(default=uuid.uuid4, unique=True, editable=False)
     created_at = models.DateTimeField(auto_now_add=True)

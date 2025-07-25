@@ -8,6 +8,7 @@ User = get_user_model()
 
 class UserSerializer(serializers.ModelSerializer):
     bio = serializers.CharField(max_length=255)
+    conversations = serializers.PrimaryKeyRelatedField(source='coversations.conversation_id', read_only=True)
 
     class Meta:
         model = User

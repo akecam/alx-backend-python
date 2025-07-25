@@ -1,6 +1,4 @@
-from django.shortcuts import render
-from rest_framework import viewsets, permissions
-from rest_framework import status, filters
+from rest_framework import generics, viewsets, permissions
 from .models import Conversation, Message
 from .serializers import (
     ConversationSerializer,
@@ -9,13 +7,24 @@ from .serializers import (
 )
 from django.contrib.auth import get_user_model
 from django.shortcuts import get_object_or_404
+from .permissions import IsParticipant
 
 User = get_user_model()
 
 
+class UserViewSet(generics.ListCreateAPIView):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+    
+    def get_permissions(self):
+        if self.request.method == 'POST':
+            return [permissions.AllowAny()]
+        return [permissions.IsAuthenticated()]
+
+
 class ConversationViewSet(viewsets.ModelViewSet):
     serializer_class = ConversationSerializer
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [permissions.IsAuthenticated, IsParticipant]
 
     def get_queryset(self):
         return Conversation.objects.filter(participants=self.request.user)    
@@ -28,13 +37,13 @@ class ConversationViewSet(viewsets.ModelViewSet):
 
 class MessageViewSet(viewsets.ModelViewSet):
     serializer_class = MessageSerializer
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [permissions.IsAuthenticated, IsParticipant]
 
     def get_queryset(self):
         conversation_id = self.kwargs.get('conversation_pk')
         conversation = get_object_or_404(
             Conversation,
-            id=conversation_id,
+            conversation_id=conversation_id,
             participants=self.request.user
         )
         return Message.objects.filter(conversation=conversation)
@@ -43,7 +52,7 @@ class MessageViewSet(viewsets.ModelViewSet):
         conversation_id = self.kwargs.get('conversation_pk')
         conversation = get_object_or_404(
             Conversation,
-            id=conversation_id,
+            conversation_id=conversation_id,
             participants=self.request.user
         )
         serializer.save(
