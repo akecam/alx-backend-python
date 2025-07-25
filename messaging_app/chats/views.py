@@ -9,8 +9,13 @@ from .serializers import (
 )
 from django.contrib.auth import get_user_model
 from django.shortcuts import get_object_or_404
+from .filters import MessageFilter
+from .pagination import MessagePagination
+from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework.exceptions import PermissionDenied
 
 User = get_user_model()
+
 
 class ConversationViewSet(viewsets.ModelViewSet):
     serializer_class = ConversationSerializer
@@ -24,9 +29,13 @@ class ConversationViewSet(viewsets.ModelViewSet):
         conversation.participants.add(self.request.user)
         conversation.save()
 
+
 class MessageViewSet(viewsets.ModelViewSet):
     serializer_class = MessageSerializer
     permission_classes = [permissions.IsAuthenticated, IsParticipantOfConversation, IsParticipant]
+    pagination_class = MessagePagination  # Add this
+    filter_backends = [DjangoFilterBackend]  # Add this
+    filterset_class = MessageFilter  # Add this
 
     def get_queryset(self):
         conversation_id = self.kwargs.get('conversation_pk')
