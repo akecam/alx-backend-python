@@ -8,7 +8,7 @@ User = get_user_model()
 
 class UserSerializer(serializers.ModelSerializer):
     bio = serializers.CharField(max_length=255)
-    conversations = serializers.PrimaryKeyRelatedField(source='coversations.conversation_id', read_only=True)
+    conversations = serializers.PrimaryKeyRelatedField(read_only=True, many=True)
 
     class Meta:
         model = User
@@ -21,6 +21,7 @@ class UserSerializer(serializers.ModelSerializer):
             "bio",
             "address",
             "is_admin",
+            "conversations"
         ]
 
 
