@@ -6,6 +6,7 @@ import logging
 import re
 
 from django.core.exceptions import PermissionDenied
+from rest_framework import response
 
 request_logger = logging.getLogger("request_logger")
 message_logger = logging.getLogger("message_logger")
@@ -48,6 +49,7 @@ class OffensiveLanguageMiddleware:
         self.get_response = get_response
 
     def __call__(self, request) -> Any:
+
         log_file_path = settings.BASE_DIR / "chat_messages.log"
         remote_address = request.META.get("REMOTE_ADDR")
         request_path = request.path
@@ -58,16 +60,10 @@ class OffensiveLanguageMiddleware:
 
                 total_index = len([index for index, line in enumerate(file.readline())])
 
-                # if total_index == 0:
-                #     message_logger.info(
-                #         f"{request.path}|{remote_address}|{datetime.now().time()}"
-                #     )
                 if total_index > 0:
                     file.seek(0)
                     matches = re.findall(remote_address, file.read())
-                    print(matches)
                     if len(matches) >= 5:
-                        print("In here")
                         file.seek(0)
                         for line in file.readlines():
                             match = re.search(remote_address, line)
@@ -84,8 +80,6 @@ class OffensiveLanguageMiddleware:
                                     minute_difference.total_seconds() % 3600
                                 ) // 60
 
-                                print(total_minute)
-
                                 if total_minute < 1:
                                     raise PermissionDenied()
                                 else:
@@ -98,8 +92,22 @@ class OffensiveLanguageMiddleware:
                                     with open(log_file_path, "w") as f:
                                         f.writelines(new_lines)
 
-            message_logger.info(
-                f"{request.path}|{remote_address}|{datetime.now().time()}"
-            )
-            response = self.get_response(request)
-            return response
+        message_logger.info(f"{request.path}|{remote_address}|{datetime.now().time()}")
+        response = self.get_response(request)
+        return response
+
+
+class RolepermissionMiddleware:
+
+    def __init__(self, get_response):
+        self.get_response = get_response
+
+    def __call__(self, request):
+
+        if not (request.user.is_admin or request.user.is_superuser or request.is_staff):
+            if request.path == "/admin/":
+                raise PermissionDenied()
+
+        response = self.get_response(request)
+
+        return response
