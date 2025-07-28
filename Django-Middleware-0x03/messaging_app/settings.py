@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
+from logging import FileHandler
 from pathlib import Path
 import environ
 
@@ -63,6 +64,7 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "chats.middleware.RequestLoggingMiddleware",
     "chats.middleware.RestrictAccessByTimeMiddleware",
+    "chats.middleware.OffensiveLanguageMiddleware",
 ]
 
 ROOT_URLCONF = "messaging_app.urls"
@@ -176,10 +178,21 @@ LOGGING = {
             "filename": BASE_DIR / "requests.log",
             "formatter": "simple",
         },
+        "messages_file": {
+            "level": "INFO",
+            "class": "logging.FileHandler",
+            "filename": BASE_DIR / "chat_messages.log",
+            "formatter": "simple",
+        },
     },
     "loggers": {
         "request_logger": {
             "handlers": ["request_file"],
+            "level": "INFO",
+            "propagate": False,
+        },
+        "message_logger": {
+            "handlers": ["messages_file"],
             "level": "INFO",
             "propagate": False,
         },
