@@ -21,6 +21,7 @@ class MessageSerializer(serializers.ModelSerializer):
     receiver = UserSerializer(read_only=True)
     message_history = MessageHistorySerializer(many=True, read_only=True)
 
+
     class Meta:
         model = Message
         fields = "__all__"

@@ -23,3 +23,5 @@ class Notification(models.Model):
 class MessageHistory(models.Model):
     message_history_id = models.UUIDField(default=uuid.uuid4, primary_key=True, db_index=True)
     message_history_content = models.ForeignKey(Message, models.CASCADE, related_name="message_history")
+    edited_by = models.ForeignKey(User, models.CASCADE, related_name="edited_message", default=None)
+    edited_at = models.DateTimeField(auto_now_add=True)
