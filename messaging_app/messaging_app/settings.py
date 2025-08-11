@@ -19,7 +19,12 @@ env = environ.Env(
     SECRET_KEY=(
         str,
         'django-insecure-&m13&(*fd_k@%p23otl1xx96cghzex+2%r2204)yy0hgd*+v%c'
-    )
+    ),
+    DB_HOST=(str, 'localhost'),
+    DB_PORT=(int, 3306),
+    DB_NAME=(str, 'messaging_db'),
+    DB_USER=(str, 'root'),
+    DB_PASSWORD=(str, ''),
 )
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -31,12 +36,12 @@ environ.Env.read_env()
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-&m13&(*fd_k@%p23otl1xx96cghzex+2%r2204)yy0hgd*+v%c'
+SECRET_KEY = env('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = env('DEBUG')
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -88,8 +93,15 @@ WSGI_APPLICATION = 'messaging_app.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': env('DB_NAME'),
+        'USER': env('DB_USER'),
+        'PASSWORD': env('DB_PASSWORD'),
+        'HOST': env('DB_HOST'),
+        'PORT': env('DB_PORT'),
+        'OPTIONS': {
+            'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
+        },
     }
 }
 
