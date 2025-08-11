@@ -20,6 +20,6 @@ def trigger_message_history(sender, instance, raw, using, update_fields, **kwarg
 
 @receiver(post_delete, sender=User)
 def delete_user(sender, instance, using, **kwargs):
-    Notification.objects.get(user=instance).delete()
-    MessageHistory.objects.get(edited_by=instance).delete()
-    Message.objects.get(sender=instance).delete()
+    Notification.objects.get(user=instance.receiver).delete()
+    MessageHistory.objects.get(edited_by=instance.receiver).delete()
+    Message.objects.get(sender=instance.receiver).delete()
