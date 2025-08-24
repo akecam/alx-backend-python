@@ -3,3 +3,5 @@ user_data.csv
 *-main.py
 __pycache__/
 __pycache__/*
+.idea
+.env*
